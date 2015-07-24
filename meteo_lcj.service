@@ -1,0 +1,20 @@
+[Unit]
+Description=Meteo Receiver for LCJ anemometer
+Wants=
+After=network.target
+
+[Service]
+Type=notify
+
+User=yggdra
+Group=yggdra
+
+ExecStart=/usr/local/bin/meteo_lcj
+
+Restart=always
+
+TimeoutStartSec=15
+WatchdogSec=10
+
+[Install]
+WantedBy=multi-user.target
