@@ -194,7 +194,7 @@ class App < Ygg::Agent::Base
     @amqp.tell AM::AMQP::MsgPublish.new(
       destination: mycfg.exchange,
       payload: {
-        station_id: 'WS',
+        station_id: mycfg.station_name,
         data: {
           wind_ok: status == 'A',
           wind_dir: @wind_dir,
@@ -213,7 +213,7 @@ class App < Ygg::Agent::Base
           wind_10m_gst_ts: @wind_10m_gst_ts,
         },
       },
-      routing_key: 'WS',
+      routing_key: mycfg.station_name,
       options: {
         type: 'WX_UPDATE',
         persistent: false,
@@ -246,8 +246,8 @@ class App < Ygg::Agent::Base
     @amqp.tell AM::AMQP::MsgPublish.new(
       destination: mycfg.exchange,
       payload: {
-        station_id: 'WS',
-        time: @time,
+        station_id: mycfg.station_name,
+        time: Time.now,
         data: {
           qfe: @qfe,
           qfe_h: mycfg.qfe_height,
@@ -256,7 +256,7 @@ class App < Ygg::Agent::Base
           temperature: @temperature,
         }
       },
-      routing_key: 'WS',
+      routing_key: mycfg.station_name,
       options: {
         type: 'WX_UPDATE',
         persistent: false,
