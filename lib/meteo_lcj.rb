@@ -52,13 +52,12 @@ class App < Ygg::Agent::Base
 
 
   def agent_boot
-    @amqp.ask(AM::AMQP::MsgDeclareExchange.new(
+    @amqp.ask(AM::AMQP::MsgExchangeDeclare.new(
+      channel_id: @amqp_chan,
       name: mycfg.exchange,
       type: :topic,
-      options: {
-        durable: true,
-        auto_delete: false,
-      }
+      durable: true,
+      auto_delete: false,
     )).value
 
     @line_buffer = Ygg::App::LineBuffer.new(line_received_cb: method(:receive_line))
@@ -192,7 +191,8 @@ class App < Ygg::Agent::Base
     end
 
     @amqp.tell AM::AMQP::MsgPublish.new(
-      destination: mycfg.exchange,
+      channel_id: @amqp_chan,
+      exchange: mycfg.exchange,
       payload: {
         station_id: mycfg.station_name,
         data: {
@@ -212,12 +212,13 @@ class App < Ygg::Agent::Base
           wind_10m_gst_dir: @wind_10m_gst_dir,
           wind_10m_gst_ts: @wind_10m_gst_ts,
         },
-      },
+      }.to_json,
+      persistant: false,
+      mandatory: false,
       routing_key: mycfg.station_name,
-      options: {
+      headers: {
+        'Content-type': 'application/json',
         type: 'WX_UPDATE',
-        persistent: false,
-        mandatory: false,
       },
     )
   end
@@ -244,7 +245,8 @@ class App < Ygg::Agent::Base
     end
 
     @amqp.tell AM::AMQP::MsgPublish.new(
-      destination: mycfg.exchange,
+      channel_id: @amqp_chan,
+      exchange: mycfg.exchange,
       payload: {
         station_id: mycfg.station_name,
         time: Time.now,
@@ -255,16 +257,15 @@ class App < Ygg::Agent::Base
           qnh: @qnh,
           temperature: @temperature,
         }
-      },
+      }.to_json,
       routing_key: mycfg.station_name,
-      options: {
+      persistant: false,
+      mandatory: false,
+      headers: {
+        'Content-type': 'application/json',
         type: 'WX_UPDATE',
-        persistent: false,
-        mandatory: false,
       }
     )
-
-
   end
 
   def nmea_parse(line, **args)
