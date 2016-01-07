@@ -31,4 +31,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'ygg_agent', '~> 2.4.0'
   s.add_runtime_dependency 'serialport', '~> 1.3.1'
   s.add_runtime_dependency 'activesupport'
+  s.add_runtime_dependency 'vihai_io_buffer'
 end

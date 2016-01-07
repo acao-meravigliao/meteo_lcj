@@ -9,7 +9,7 @@
 
 require 'ygg/agent/base'
 
-require 'ygg/app/line_buffer'
+require 'vihai_io_buffer'
 
 require 'meteo_lcj/version'
 require 'meteo_lcj/task'
@@ -60,7 +60,7 @@ class App < Ygg::Agent::Base
       auto_delete: false,
     )).value
 
-    @line_buffer = Ygg::App::LineBuffer.new(line_received_cb: method(:receive_line))
+    @line_buffer = VihaiIoBuffer.new
 
     @serialport = SerialPort.new(mycfg.serial.device,
       'baud' => mycfg.serial.speed,
@@ -89,7 +89,10 @@ class App < Ygg::Agent::Base
         return
       end
 
-      @line_buffer.push(data)
+      @line_buffer << data
+      @line_buffer.each_line do |line|
+        receive_line(line)
+      end
     else
       super
     end
