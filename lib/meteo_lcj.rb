@@ -14,8 +14,7 @@ require 'vihai_io_buffer'
 require 'meteo_lcj/version'
 require 'meteo_lcj/task'
 
-require 'serialport'
-
+require 'serialport.rb' # if we dont't add .rb sometimes serialport.so is loaded and .rb is not
 
 module MeteoLcj
 
@@ -198,6 +197,7 @@ class App < Ygg::Agent::Base
       exchange: mycfg.exchange,
       payload: {
         station_id: mycfg.station_name,
+        sample_ts: Time.now,
         data: {
           wind_ok: status == 'A',
           wind_dir: @wind_dir,
@@ -252,7 +252,7 @@ class App < Ygg::Agent::Base
       exchange: mycfg.exchange,
       payload: {
         station_id: mycfg.station_name,
-        time: Time.now,
+        sample_ts: Time.now,
         data: {
           qfe: @qfe,
           qfe_h: mycfg.qfe_height,
