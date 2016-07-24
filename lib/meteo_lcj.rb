@@ -216,7 +216,7 @@ class App < Ygg::Agent::Base
           wind_10m_gst_ts: @wind_10m_gst_ts,
         },
       }.to_json,
-      persistant: false,
+      persistent: false,
       mandatory: false,
       routing_key: mycfg.station_name,
       headers: {
@@ -262,7 +262,7 @@ class App < Ygg::Agent::Base
         }
       }.to_json,
       routing_key: mycfg.station_name,
-      persistant: false,
+      persistent: false,
       mandatory: false,
       headers: {
         'Content-type': 'application/json',
