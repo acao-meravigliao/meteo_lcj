@@ -75,7 +75,7 @@ class App < Ygg::Agent::Base
     @history = []
   end
 
-  def receive(events, io)
+  def actor_receive(events, io)
     case io
     when @serialport
       data = @serialport.read_nonblock(65536)
