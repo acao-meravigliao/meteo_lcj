@@ -13,7 +13,7 @@ ExecStart=/usr/local/bin/meteo_lcj
 
 Restart=always
 
-TimeoutStartSec=15
+TimeoutStartSec=30
 WatchdogSec=10
 
 [Install]
